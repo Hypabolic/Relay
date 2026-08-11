@@ -1,0 +1,82 @@
+{
+  "name": "@hypabolic/relay",
+  "version": "0.1.0",
+  "description": "Continue coding sessions from Claude Code, Codex, Grok Build, and OpenClaw inside Pi",
+  "license": "MIT",
+  "author": "Hypabolic",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hypabolic/Relay.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Hypabolic/Relay/issues"
+  },
+  "homepage": "https://github.com/Hypabolic/Relay#readme",
+  "keywords": [
+    "pi",
+    "pi-extension",
+    "pi-package",
+    "coding-agent",
+    "trajectory",
+    "session",
+    "claude-code",
+    "codex",
+    "grok",
+    "openclaw"
+  ],
+  "pi": {
+    "extensions": [
+      "./dist/index.js"
+    ]
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "npm run build && node --import tsx --test test/**/*.test.ts",
+    "prepack": "npm run build"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "dependencies": {
+    "@hypabolic/trajectory": "^0.1.2",
+    "@hypabolic/trajectory-node": "^0.1.2",
+    "typebox": "1.3.7"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-tui": "*"
+  },
+  "peerDependenciesMeta": {
+    "@earendil-works/pi-coding-agent": {
+      "optional": false
+    },
+    "@earendil-works/pi-tui": {
+      "optional": false
+    }
+  },
+  "devDependencies": {
+    "@earendil-works/pi-coding-agent": "latest",
+    "@earendil-works/pi-tui": "latest",
+    "@types/node": "^22.13.10",
+    "tsx": "^4.23.12",
+    "typescript": "^5.8.2"
+  }
+}

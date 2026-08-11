@@ -1,0 +1,149 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to release, e.g. v0.1.0"
+        required: true
+        type: string
+      dry_run:
+        description: "Pack only (no npm publish / GitHub Release)"
+        required: false
+        type: boolean
+        default: false
+      npm_auth:
+        description: "npm auth — token for first bootstrap publish; oidc after trusted publisher is configured"
+        required: false
+        type: choice
+        options:
+          - token
+          - oidc
+        default: token
+
+permissions:
+  contents: write
+  id-token: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish @hypabolic/relay
+    runs-on: ubuntu-latest
+    environment: release
+    steps:
+      - name: Resolve version
+        id: ver
+        env:
+          INPUT_TAG: ${{ github.event.inputs.tag }}
+          INPUT_AUTH: ${{ github.event.inputs.npm_auth }}
+          REF_NAME: ${{ github.ref_name }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          TAG="${INPUT_TAG:-}"
+          if [[ -z "$TAG" ]]; then
+            TAG="$REF_NAME"
+          fi
+          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Tag must be vX.Y.Z (got '$TAG')" >&2
+            exit 1
+          fi
+          VERSION="${TAG#v}"
+          # Tag pushes default to OIDC once trusted publisher exists; dispatch chooses.
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            AUTH="${INPUT_AUTH:-token}"
+          else
+            AUTH="oidc"
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "dry_run=${{ github.event.inputs.dry_run || false }}" >> "$GITHUB_OUTPUT"
+          echo "npm_auth=$AUTH" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.ver.outputs.tag }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+          scope: "@hypabolic"
+
+      - name: Ensure recent npm (OIDC provenance)
+        run: npm install -g npm@latest
+
+      - name: Stamp version
+        env:
+          VERSION: ${{ steps.ver.outputs.version }}
+        run: |
+          set -euo pipefail
+          tmp=$(mktemp)
+          jq --arg v "$VERSION" '.version = $v' package.json > "$tmp"
+          mv "$tmp" package.json
+          jq '{name, version}' package.json
+
+      - name: Install, test, pack
+        run: |
+          set -euo pipefail
+          npm ci
+          npm test
+          npm pack
+
+      - name: Publish to npm
+        if: ${{ steps.ver.outputs.dry_run != 'true' }}
+        env:
+          NODE_AUTH_TOKEN: ${{ steps.ver.outputs.npm_auth == 'token' && secrets.NPM_TOKEN || '' }}
+          AUTH: ${{ steps.ver.outputs.npm_auth }}
+          VERSION: ${{ steps.ver.outputs.version }}
+        run: |
+          set -euo pipefail
+          if [[ "$AUTH" == "token" ]]; then
+            if [[ -z "${NODE_AUTH_TOKEN:-}" ]]; then
+              echo "npm_auth=token requires repository/org secret NPM_TOKEN" >&2
+              exit 1
+            fi
+          else
+            # OIDC trusted publishing
+            unset NODE_AUTH_TOKEN || true
+          fi
+          echo "Publishing @hypabolic/relay@${VERSION} (auth=${AUTH})"
+          if npm publish --access public --provenance; then
+            echo "Published @hypabolic/relay@${VERSION}"
+          elif npm view "@hypabolic/relay@${VERSION}" version >/dev/null 2>&1; then
+            echo "::notice::@hypabolic/relay@${VERSION} already published"
+          else
+            echo "Failed to publish @hypabolic/relay@${VERSION}" >&2
+            exit 1
+          fi
+
+      - name: GitHub Release
+        if: ${{ steps.ver.outputs.dry_run != 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.ver.outputs.tag }}
+          VERSION: ${{ steps.ver.outputs.version }}
+        run: |
+          set -euo pipefail
+          NOTES="See CHANGELOG.md for @hypabolic/relay ${VERSION}.
+
+          \`\`\`bash
+          pi install npm:@hypabolic/relay@${VERSION}
+          \`\`\`
+
+          After the first publish, configure npm **Trusted Publisher** (OIDC) for this repo's Release workflow, then prefer \`npm_auth=oidc\` on later tags.
+          "
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" hypabolic-relay-*.tgz --clobber || true
+          else
+            gh release create "$TAG" hypabolic-relay-*.tgz \
+              --title "Relay ${VERSION}" \
+              --notes "$NOTES"
+          fi
