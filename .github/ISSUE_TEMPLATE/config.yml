@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://github.com/Hypabolic/Relay/blob/main/README.md
+    about: Install, usage, config, troubleshooting
+  - name: Product spec
+    url: https://github.com/Hypabolic/Relay/blob/main/SPEC.md
+    about: Intended behaviour and design decisions
+  - name: Trajectory (normalize / listing)
+    url: https://github.com/Hypabolic/Trajectory/issues
+    about: Bugs in transcript decode or listing titles belong upstream when not Relay-specific
+  - name: Security / sensitive reports
+    url: https://github.com/Hypabolic/Relay/security/advisories/new
+    about: Do not file public issues for vulnerabilities or leaked secrets

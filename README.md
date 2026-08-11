@@ -243,6 +243,8 @@ Environment root overrides (when config `root` is null):
 
 ## Development
 
+See **[CONTRIBUTING.md](./CONTRIBUTING.md)** for setup, PR expectations, and issue templates.
+
 ```bash
 npm ci
 npm test          # build + unit tests
@@ -252,10 +254,15 @@ npm pack --dry-run
 
 | Path | Role |
 | --- | --- |
+| [`CONTRIBUTING.md`](./CONTRIBUTING.md) | Contributor guide |
 | [`SPEC.md`](./SPEC.md) | Product specification |
 | [`CHANGELOG.md`](./CHANGELOG.md) | User-facing release notes |
 | [`docs/publishing.md`](./docs/publishing.md) | Versioning & npm/GitHub release |
 | [`docs/provider-extensibility.md`](./docs/provider-extensibility.md) | Adding Trajectory sources |
+
+### pi.dev package gallery
+
+The [Pi package catalog](https://pi.dev/packages) indexes **npm** packages that include the keyword **`pi-package`**. This package already declares that keyword plus a `pi.extensions` manifest. After publish, allow npm search indexing to catch up; the gallery is not a separate registry.
 
 ---
 

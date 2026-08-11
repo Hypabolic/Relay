@@ -1,0 +1,113 @@
+name: Bug report
+description: Something is wrong or unexpected in Relay
+title: "bug: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. **Sanitize** all logs and paths — never paste
+        full production transcripts, API keys, tokens, or personal data.
+        See [CONTRIBUTING.md](https://github.com/Hypabolic/Relay/blob/main/CONTRIBUTING.md).
+
+  - type: input
+    id: version
+    attributes:
+      label: Relay version
+      description: npm package version, or git commit if running from source
+      placeholder: "0.1.1"
+    validations:
+      required: true
+
+  - type: input
+    id: pi_version
+    attributes:
+      label: Pi version
+      description: Output of `pi --version` if available
+      placeholder: "e.g. 0.84.x"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      multiple: true
+      options:
+        - /relay picker UI
+        - Startup offer
+        - Resume / handoff seed
+        - Transcript search tools
+        - Listing / cwd scope / titles
+        - Config
+        - Install / pi package
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: provider
+    attributes:
+      label: Foreign provider (if relevant)
+      options:
+        - Not applicable
+        - Claude Code
+        - Codex
+        - Grok Build
+        - OpenClaw
+        - Multiple / unknown
+    validations:
+      required: true
+
+  - type: textarea
+    id: what_happened
+    attributes:
+      label: What happened?
+      description: Actual behaviour (UI copy, crash, wrong session, empty list, etc.)
+      placeholder: |
+        e.g. Startup offer shows no session title; selecting a session exits Pi.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: |
+        Include OS, how Relay was installed (`npm:@hypabolic/relay` vs path),
+        and sanitized steps. Prefer screenshots of UI only (no secrets).
+      placeholder: |
+        1. pi install npm:@hypabolic/relay
+        2. cd my-project && pi
+        3. /relay …
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: |
+        - OS: Linux / macOS / Windows (WSL?)
+        - Node: 22.x
+        - Install: npm:@hypabolic/relay@0.1.1
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I searched existing issues for duplicates
+          required: true
+        - label: Any logs or paths are sanitized (no secrets or personal transcripts)
+          required: true

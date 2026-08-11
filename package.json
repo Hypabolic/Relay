@@ -17,21 +17,22 @@
   },
   "homepage": "https://github.com/Hypabolic/Relay#readme",
   "keywords": [
-    "pi",
-    "pi-extension",
     "pi-package",
+    "pi",
+    "pi-coding-agent",
+    "pi-extension",
     "coding-agent",
     "trajectory",
     "session",
+    "session-resume",
     "claude-code",
     "codex",
     "grok",
-    "openclaw"
+    "openclaw",
+    "hypabolic"
   ],
   "pi": {
-    "extensions": [
-      "./dist/index.js"
-    ]
+    "extensions": ["./dist/index.js"]
   },
   "exports": {
     ".": {

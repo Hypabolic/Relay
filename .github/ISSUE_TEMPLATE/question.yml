@@ -1,0 +1,27 @@
+name: Question
+description: Ask about usage or design (not a bug or feature request)
+title: "q: "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Prefer [README](https://github.com/Hypabolic/Relay/blob/main/README.md) and
+        [SPEC](https://github.com/Hypabolic/Relay/blob/main/SPEC.md) first.
+        Use bug/feature templates when you have a concrete defect or proposal.
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: What are you trying to do, and what is unclear?
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Version, install method, sanitized snippet (no private transcripts)
+    validations:
+      required: false

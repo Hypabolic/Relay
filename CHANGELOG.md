@@ -11,9 +11,15 @@ The **git tag is the release version** (`vX.Y.Z` → npm `X.Y.Z`). See [docs/pub
 
 ## [Unreleased]
 
+### Added
+
+- Contributor guide (`CONTRIBUTING.md`), GitHub issue templates, and PR template
+- Stronger npm/`pi.dev` discoverability keywords (`pi-package` first, `pi-coding-agent`, etc.)
+
 ### Planned
 
 - Provider registry spine (see `docs/provider-extensibility.md`)
+- Optional gallery `pi.image` / `pi.video` preview assets
 
 ---
 
