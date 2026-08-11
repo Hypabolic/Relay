@@ -115,6 +115,7 @@ jobs:
             unset NODE_AUTH_TOKEN || true
           fi
           echo "Publishing @hypabolic/relay@${VERSION} (auth=${AUTH})"
+          # Provenance only works under CI OIDC — always pass --provenance on the Actions runner.
           if npm publish --access public --provenance; then
             echo "Published @hypabolic/relay@${VERSION}"
           elif npm view "@hypabolic/relay@${VERSION}" version >/dev/null 2>&1; then

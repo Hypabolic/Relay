@@ -22,7 +22,7 @@ else
   npm login --auth-type=web --registry https://registry.npmjs.org
 fi
 
-echo "==> Publish @hypabolic/relay@0.1.0"
+echo "==> Publish @hypabolic/relay@0.1.0 (no provenance on laptop — CI adds it later via OIDC)"
 npm publish --access public
 
 echo "==> Verify"

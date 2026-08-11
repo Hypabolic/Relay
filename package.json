@@ -52,8 +52,7 @@
     "prepack": "npm run build"
   },
   "publishConfig": {
-    "access": "public",
-    "provenance": true
+    "access": "public"
   },
   "dependencies": {
     "@hypabolic/trajectory": "^0.1.2",
