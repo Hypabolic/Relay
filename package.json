@@ -1,6 +1,6 @@
 {
   "name": "@hypabolic/relay",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Continue coding sessions from Claude Code, Codex, Grok Build, and OpenClaw inside Pi",
   "license": "MIT",
   "author": "Hypabolic",

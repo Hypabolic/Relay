@@ -26,7 +26,7 @@ It does **not** pretend the other tool’s JSONL is a native Pi session, and it 
 pi install npm:@hypabolic/relay
 
 # pin a version
-pi install npm:@hypabolic/relay@0.1.0
+pi install npm:@hypabolic/relay@0.1.1
 ```
 
 Then start Pi as usual (`pi` in your project). Confirm the package is loaded:

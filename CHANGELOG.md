@@ -17,31 +17,38 @@ The **git tag is the release version** (`vX.Y.Z` → npm `X.Y.Z`). See [docs/pub
 
 ---
 
-## [0.1.0] — 2026-08-11
+## [0.1.1] — 2026-08-11
 
-First public release.
+### Fixed
+
+- First **installable** public release on npm (`0.1.0` hit a registry ghost state: name reserved, packument 404).
+- Local bootstrap: no `publishConfig.provenance` (provenance remains CI-only via OIDC).
 
 ### Added
 
-- **`/relay`** tabbed session picker for Claude Code, Codex, Grok Build, and OpenClaw
-- Project-scoped listing by default; **Ctrl+P** toggles all projects
-- Direct args: `latest`, `<provider>`, `<provider> <id>`, `yes` / `no`
-- Trajectory-backed normalize (`@hypabolic/trajectory` ^0.1.2) and inert archives under `~/.pi/agent/relay/archives/`
-- Deterministic handoff brief + verify/continue steer (no full transcript dump)
-- Agent tools: `relay_transcript_info`, `relay_transcript_search`, `relay_transcript_read`
-- Startup offer for recent cwd-matched sessions (default 24h window)
-  - Single select modal: “Coming from …?” + labeled **Session:** title
-  - Most-recent one-click; “Pick another…” opens full picker when multiple qualify
-- Config via `~/.pi/agent/relay.json` and project `.pi/relay.json`
-- Listing title preference from Trajectory; local scrape fallback for weak titles
+Same feature set as the 0.1.0 cut:
 
-### Security
+- `/relay` picker (Claude Code, Codex, Grok Build, OpenClaw)
+- Startup offer with labeled session title
+- Trajectory normalize + inert archive + search tools
+- Config via `~/.pi/agent/relay.json`
 
-- Foreign session stores are read-only
-- Transcript content treated as untrusted inert history
-- Size caps on handoff, archive input, and search responses
+### Install
+
+```bash
+pi install npm:@hypabolic/relay
+# or
+pi install npm:@hypabolic/relay@0.1.1
+```
 
 ---
 
-[Unreleased]: https://github.com/Hypabolic/Relay/compare/v0.1.0...HEAD
+## [0.1.0] — 2026-08-11
+
+Initial tag/attempt. **Do not use** — install **0.1.1** instead.
+
+---
+
+[Unreleased]: https://github.com/Hypabolic/Relay/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/Hypabolic/Relay/releases/tag/v0.1.1
 [0.1.0]: https://github.com/Hypabolic/Relay/releases/tag/v0.1.0
