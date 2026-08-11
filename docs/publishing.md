@@ -21,6 +21,9 @@
 
 ## Bootstrap (first publish) — **from this machine**
 
+**Each version is published once.** Laptop *or* CI — never both for the same `X.Y.Z`.  
+If you publish from the laptop, you can still push `vX.Y.Z` for the GitHub Release; the Release workflow **skips npm** when that version already exists.
+
 OIDC trusted publishers can only be configured **after** the package exists under `@hypabolic`. Create it with a local publish.
 
 ### 1. npm login
