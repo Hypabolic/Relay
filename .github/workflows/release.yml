@@ -114,16 +114,39 @@ jobs:
             # OIDC trusted publishing
             unset NODE_AUTH_TOKEN || true
           fi
-          echo "Publishing @hypabolic/relay@${VERSION} (auth=${AUTH})"
-          # Provenance only works under CI OIDC — always pass --provenance on the Actions runner.
-          if npm publish --access public --provenance; then
-            echo "Published @hypabolic/relay@${VERSION}"
-          elif npm view "@hypabolic/relay@${VERSION}" version >/dev/null 2>&1; then
-            echo "::notice::@hypabolic/relay@${VERSION} already published"
-          else
-            echo "Failed to publish @hypabolic/relay@${VERSION}" >&2
-            exit 1
+          # Skip publish if this version is already on the registry (e.g. laptop bootstrap).
+          if npm view "@hypabolic/relay@${VERSION}" version >/dev/null 2>&1; then
+            echo "::notice::@hypabolic/relay@${VERSION} already on npm — skipping publish"
+            exit 0
           fi
+
+          echo "Publishing @hypabolic/relay@${VERSION} (auth=${AUTH})"
+          set +e
+          # Provenance only works under CI OIDC — always pass --provenance on the Actions runner.
+          out=$(npm publish --access public --provenance 2>&1)
+          code=$?
+          set -e
+          echo "$out"
+
+          if [[ $code -eq 0 ]]; then
+            echo "Published @hypabolic/relay@${VERSION}"
+            exit 0
+          fi
+
+          # Treat "cannot publish over previously published versions" as success.
+          # (npm view can lag right after a laptop publish, so match the error text too.)
+          if echo "$out" | grep -qiE 'cannot publish over the previously published versions|EPUBLISHCONFLICT|previously published'; then
+            echo "::notice::@hypabolic/relay@${VERSION} already published (conflict) — treating as success"
+            exit 0
+          fi
+
+          if npm view "@hypabolic/relay@${VERSION}" version >/dev/null 2>&1; then
+            echo "::notice::@hypabolic/relay@${VERSION} already on npm after failed publish — treating as success"
+            exit 0
+          fi
+
+          echo "Failed to publish @hypabolic/relay@${VERSION}" >&2
+          exit 1
 
       - name: GitHub Release
         if: ${{ steps.ver.outputs.dry_run != 'true' }}
